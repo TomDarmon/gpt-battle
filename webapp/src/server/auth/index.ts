@@ -51,7 +51,7 @@ export const auth = betterAuth({
   },
   rateLimit: {
     window: 60, // time window in seconds
-    max: 5, // max requests in the window
+    max: 25, // max requests in the window
   },
   emailAndPassword: {
     enabled: true,
