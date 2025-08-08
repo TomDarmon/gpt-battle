@@ -1,11 +1,9 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { LoadingButton } from "~/components/loading-button";
-import { Button } from "~/components/ui/button";
 import {
   Card,
   CardContent,
@@ -33,7 +31,6 @@ export function SignupForm({
 }: React.ComponentPropsWithoutRef<"div">) {
   const [pending, setPending] = useState(false);
   const { toast } = useToast();
-  const router = useRouter();
   const form = useForm<SignUpSchemaType>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {

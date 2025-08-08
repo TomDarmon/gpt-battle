@@ -8,7 +8,6 @@ import { LoadingButton } from "~/components/loading-button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
@@ -141,7 +140,7 @@ function ResetPasswordFormNoSuspense({
                   )}
                 />
               ))}
-              <LoadingButton pending={pending} onClick={() => {}}>
+              <LoadingButton pending={pending}>
                 Reset Password
               </LoadingButton>
             </form>

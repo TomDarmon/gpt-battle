@@ -109,7 +109,7 @@ export function ForgotPasswordForm({
                   )}
                 />
               ))}
-              <LoadingButton pending={pending} onClick={() => {}}>
+              <LoadingButton pending={pending}>
                 Send Reset Link
               </LoadingButton>
             </form>

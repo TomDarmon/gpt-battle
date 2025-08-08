@@ -1,5 +1,7 @@
 import UsersTable from "~/components/admin/users-table";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Button } from "~/components/ui/button";
+import Link from "next/link";
 
 export default async function AdminDashboard() {
   return (
@@ -11,6 +13,10 @@ export default async function AdminDashboard() {
             Manage users and view system statistics
           </p>
         </div>
+
+        <Button>
+          <Link href="/">Go back home</Link>
+        </Button>
 
         <Card>
           <CardHeader>

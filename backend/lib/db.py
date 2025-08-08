@@ -11,27 +11,17 @@ def get_conn():
         yield conn
 
 
-def insert_match(seed: str, status: str = "created", game_id: Optional[str] = None) -> int:
+def insert_match(seed: str, status: str, game_id: str) -> int:
     with get_conn() as conn:
         with conn.cursor() as cur:
-            if game_id is None:
-                cur.execute(
-                    """
-                    insert into matches (seed, status)
-                    values (%s, %s)
-                    returning id
-                    """,
-                    (seed, status),
-                )
-            else:
-                cur.execute(
-                    """
-                    insert into matches (seed, status, game_id)
-                    values (%s, %s, %s)
-                    returning id
-                    """,
-                    (seed, status, game_id),
-                )
+            cur.execute(
+                """
+                insert into matches (seed, status, game_id)
+                values (%s, %s, %s)
+                returning id
+                """,
+                (seed, status, game_id),
+            )
             (match_id,) = cur.fetchone()
             conn.commit()
             return match_id

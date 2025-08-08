@@ -1,4 +1,5 @@
 import { postRouter } from "~/server/api/routers/post";
+import { matchRouter } from "~/server/api/routers/match";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
 /**
@@ -8,6 +9,7 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
  */
 export const appRouter = createTRPCRouter({
   post: postRouter,
+  match: matchRouter,
 });
 
 // export type definition of API

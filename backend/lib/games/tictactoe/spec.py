@@ -1,8 +1,4 @@
-from __future__ import annotations
-
 import random
-from typing import Any
-from pydantic import BaseModel
 from lib.core.types import TransitionResult, Event
 from lib.core.game import GameSpec as GameSpecProto
 from .models import TicTacToeState, TicTacToeAction, TicTacToeObservation
@@ -19,10 +15,6 @@ class TicTacToeGameSpec(GameSpecProto[TicTacToeState, TicTacToeAction, TicTacToe
         return state.player
 
     def apply_action(self, state: TicTacToeState, action: TicTacToeAction) -> TransitionResult[TicTacToeState]:
-        # interpret as ttt move
-        if not isinstance(action, TicTacToeAction):
-            raise ValueError("Illegal action type for TicTacToeAction")
-
         row = int(action.payload.get("row", -1))
         col = int(action.payload.get("col", -1))
         if row not in range(3) or col not in range(3):

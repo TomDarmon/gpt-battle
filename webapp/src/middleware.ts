@@ -32,8 +32,6 @@ export default async function authMiddleware(request: NextRequest) {
     },
   );
 
-  console.log("Session: ", session);
-
   if (!session) {
     if (isAuthRoute || isPasswordRoute) {
       return NextResponse.next();
@@ -43,10 +41,11 @@ export default async function authMiddleware(request: NextRequest) {
   }
 
   if (isAuthRoute || isPasswordRoute) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   if (isAdminRoute && session.user.role !== "admin") {
+    console.log("User is not an admin");
     return NextResponse.redirect(new URL("/", request.url));
   }
 

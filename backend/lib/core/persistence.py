@@ -5,7 +5,7 @@ from lib import db
 
 
 def create_match(seed: str, game_id: str) -> int:
-    return db.insert_match(seed=seed, status="running", game_id=game_id)
+    return db.insert_match(seed=seed, status="created", game_id=game_id)
 
 
 def record_turn(match_id: int, idx: int, actor: str, message: Optional[str] = None) -> int:
