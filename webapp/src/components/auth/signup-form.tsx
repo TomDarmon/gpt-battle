@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import LoadingButton from "~/components/loading-button";
+import { LoadingButton } from "~/components/loading-button";
 import { Button } from "~/components/ui/button";
 import {
   Card,

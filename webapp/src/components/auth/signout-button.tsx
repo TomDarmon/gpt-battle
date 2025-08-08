@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import LoadingButton from "~/components/loading-button";
+import { LoadingButton } from "~/components/loading-button";
 import { authClient } from "~/server/auth/client";
 
 export default function SignoutButton() {

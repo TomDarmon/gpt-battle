@@ -1,6 +1,7 @@
-import { Button, type ButtonProps } from "~/components/ui/button";
+import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
-export default function LoadingButton({
+
+export function LoadingButton({
   pending,
   children,
   onClick,
@@ -11,7 +12,7 @@ export default function LoadingButton({
   children: React.ReactNode;
   onClick?: () => void;
   className?: string;
-} & ButtonProps) {
+}) {
   return (
     <Button
       onClick={onClick}

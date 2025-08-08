@@ -33,7 +33,7 @@ export const auth = betterAuth({
     additionalFields: {
       isPremium: {
         type: "boolean",
-        required: true,
+        required: false,
       },
     },
     changeEmail: {

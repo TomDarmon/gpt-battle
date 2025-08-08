@@ -2,20 +2,18 @@
 
 // Inspired by react-hot-toast library
 import * as React from "react"
-
-import type {
-  ToastActionElement,
-  ToastProps,
-} from "~/components/ui/sonner"
+import { toast as sonnerToast } from "sonner"
 
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 1000000
 
-type ToasterToast = ToastProps & {
+type ToasterToast = {
   id: string
   title?: React.ReactNode
   description?: React.ReactNode
-  action?: ToastActionElement
+  variant?: "default" | "destructive"
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
 const actionTypes = {
@@ -142,7 +140,7 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">
 
-function toast({ ...props }: Toast) {
+function toast({ title, description, variant = "default", ...props }: Toast) {
   const id = genId()
 
   const update = (props: ToasterToast) =>
@@ -152,13 +150,29 @@ function toast({ ...props }: Toast) {
     })
   const dismiss = () => dispatch({ type: "DISMISS_TOAST", toastId: id })
 
+  // Use sonner's toast function
+  if (variant === "destructive") {
+    sonnerToast.error(title, {
+      description: description as string,
+      id,
+    })
+  } else {
+    sonnerToast(title, {
+      description: description as string,
+      id,
+    })
+  }
+
   dispatch({
     type: "ADD_TOAST",
     toast: {
       ...props,
       id,
+      title,
+      description,
+      variant,
       open: true,
-      onOpenChange: (open) => {
+      onOpenChange: (open: boolean) => {
         if (!open) dismiss()
       },
     },

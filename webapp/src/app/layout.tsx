@@ -2,7 +2,7 @@ import "~/styles/globals.css";
 
 import { type Metadata } from "next";
 
-import { Toaster } from "~/components/ui/sonner";
+import { Toaster } from "sonner";
 import { TRPCReactProvider } from "~/trpc/react";
 
 export const metadata: Metadata = {

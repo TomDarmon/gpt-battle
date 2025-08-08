@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
-import LoadingButton from "~/components/loading-button";
+import { LoadingButton } from "~/components/loading-button";
 import {
   Card,
   CardContent,
@@ -141,8 +141,8 @@ function ResetPasswordFormNoSuspense({
                   )}
                 />
               ))}
-              <LoadingButton type="submit" pending={pending}>
-                Send Reset Link
+              <LoadingButton pending={pending} onClick={() => {}}>
+                Reset Password
               </LoadingButton>
             </form>
           </Form>

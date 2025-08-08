@@ -3,7 +3,7 @@ import { type ErrorContext } from "@better-fetch/fetch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import LoadingButton from "~/components/loading-button";
+import { LoadingButton } from "~/components/loading-button";
 import {
   Card,
   CardContent,
@@ -109,7 +109,7 @@ export function ForgotPasswordForm({
                   )}
                 />
               ))}
-              <LoadingButton type="submit" pending={pending}>
+              <LoadingButton pending={pending} onClick={() => {}}>
                 Send Reset Link
               </LoadingButton>
             </form>
