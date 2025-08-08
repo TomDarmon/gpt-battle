@@ -41,14 +41,30 @@ class Engine:
             raise
 
     def _initialize_match(self, seed: str, game: GameSpec[StateT, ActionT, ObservationT]) -> int:
-        logger.info(f"engine.match_started seed={seed} game={game.game_id}")
-        match_id = persistence.create_match(seed=seed, game_id=game.game_id)
-        persistence.record_event(match_id, "engine.match_started", {"seed": seed, "game_id": game.game_id})
+        logger.info(
+            f"engine.match_started seed={seed} game_key={game.game_key} version={game.game_version}"
+        )
+        match_id = persistence.create_match(
+            seed=seed,
+            game_key=game.game_key,
+            game_version=game.game_version,
+        )
+        persistence.record_event(
+            match_id,
+            "engine.match_started",
+            {"seed": seed, "game_key": game.game_key, "game_version": game.game_version},
+        )
         return match_id
 
     def _setup_initial_state(self, match_id: int, game: GameSpec[StateT, ActionT, ObservationT], seed: str) -> StateT:
         state = game.initial_state(seed)
-        persistence.record_snapshot(match_id, game_id=game.game_id, state=state.model_dump(), turn_id=None)
+        persistence.record_snapshot(
+            match_id,
+            game_key=game.game_key,
+            game_version=game.game_version,
+            state=state.model_dump(),
+            turn_id=None,
+        )
         return state
 
     def _run_game_loop(
@@ -110,6 +126,7 @@ class Engine:
         actor: str,
     ) -> Dict[str, float] | None:
         try:
+            # Validate by attempting to apply on a copy; if it fails, forfeit
             game.apply_action(state, action)
             return None  # No forfeit, action is valid
         except ValueError as ve:
@@ -144,15 +161,26 @@ class Engine:
         turn_idx: int,
         actor: str,
     ) -> StateT:
-        # persist turn and events
-        message_str = action.model_dump_json()
-        turn_id = persistence.record_turn(match_id, idx=turn_idx, actor=actor, message=message_str)
+        # persist turn and events (store JSON as typed action)
+        turn_id = persistence.record_turn(
+            match_id,
+            idx=turn_idx,
+            actor=actor,
+            action=action.model_dump(),
+            action_type=getattr(action, "type", None),
+        )
         for ev in result.events:
             persistence.record_event(match_id, ev.type, ev.payload, turn_id=turn_id)
 
         # update state and snapshot
         state = result.state_after
-        persistence.record_snapshot(match_id, game_id=game.game_id, state=state.model_dump(), turn_id=turn_id)
+        persistence.record_snapshot(
+            match_id,
+            game_key=game.game_key,
+            game_version=game.game_version,
+            state=state.model_dump(),
+            turn_id=turn_id,
+        )
         return state
 
     def _finalize_match(

@@ -1,10 +1,9 @@
 import { z } from "zod";
-import { asc, desc, eq } from "drizzle-orm";
+import { asc, desc, eq, and } from "drizzle-orm";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { matches, turns, games } from "~/server/db/match/schema";
+import { matches, turns, stateSnapshots as games } from "~/server/db/match/schema";
 import {
-  TICTACTOE_GAME_ID,
   type TicTacToeActor,
   type TicTacToeState,
   type TicTacToeMoveMessage,
@@ -23,23 +22,26 @@ export const matchRouter = createTRPCRouter({
     .input(
       z
         .object({
-          gameId: z.string().optional().default(TICTACTOE_GAME_ID),
+          gameKey: z.string().optional().default("tictactoe"),
+          gameVersion: z.string().optional().default("v1"),
           limit: z.number().int().min(1).max(200).optional().default(50),
         })
         .optional()
     )
     .query(async ({ ctx, input }) => {
-      const gameId = input?.gameId ?? TICTACTOE_GAME_ID;
+      const gameKey = input?.gameKey ?? "tictactoe";
+      const gameVersion = input?.gameVersion ?? "v1";
       const limit = input?.limit ?? 50;
       const rows = await ctx.db.query.matches.findMany({
-        where: eq(matches.gameId, gameId),
+        where: and(eq(matches.gameKey, gameKey), eq(matches.gameVersion, gameVersion)),
         orderBy: desc(matches.createdAt),
         limit,
         columns: {
           id: true,
           seed: true,
           status: true,
-          gameId: true,
+          gameKey: true,
+          gameVersion: true,
           createdAt: true,
         },
       });
@@ -55,6 +57,14 @@ export const matchRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const match = await ctx.db.query.matches.findFirst({
         where: eq(matches.id, input.matchId),
+        columns: {
+          id: true,
+          seed: true,
+          status: true,
+          gameKey: true,
+          gameVersion: true,
+          createdAt: true,
+        },
       });
       if (!match) return null;
 
@@ -62,9 +72,24 @@ export const matchRouter = createTRPCRouter({
         ctx.db.query.turns.findMany({
           where: eq(turns.matchId, input.matchId),
           orderBy: asc(turns.idx),
+          columns: {
+            id: true,
+            idx: true,
+            actor: true,
+            action: true,
+          },
         }),
-        ctx.db.query.games.findMany({
+        ctx.db.query.stateSnapshots.findMany({
           where: eq(games.matchId, input.matchId),
+          columns: {
+            id: true,
+            matchId: true,
+            turnId: true,
+            gameKey: true,
+            gameVersion: true,
+            state: true,
+            createdAt: true,
+          },
         }),
       ]);
 
@@ -77,13 +102,7 @@ export const matchRouter = createTRPCRouter({
       }
 
       const steps = turnRows.map((t) => {
-        let parsed: unknown = null;
-        try {
-          parsed = JSON.parse(t.message);
-        } catch {
-          parsed = null;
-        }
-        const safeMove = moveMessageSchema.safeParse(parsed);
+        const safeMove = moveMessageSchema.safeParse(t.action as unknown);
         const move: TicTacToeMoveMessage | null = safeMove.success
           ? safeMove.data
           : null;
@@ -91,7 +110,7 @@ export const matchRouter = createTRPCRouter({
           id: t.id,
           idx: t.idx,
           actor: (t.actor as TicTacToeActor) ?? "agentA",
-          move,
+          action: move,
           state: snapshotByTurnId.get(t.id) ?? null,
         };
       });

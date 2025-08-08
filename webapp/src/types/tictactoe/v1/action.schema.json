@@ -1,0 +1,22 @@
+{
+  "properties": {
+    "type": {
+      "const": "move",
+      "title": "Type",
+      "type": "string"
+    },
+    "payload": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Payload",
+      "type": "object"
+    }
+  },
+  "required": [
+    "type",
+    "payload"
+  ],
+  "title": "TicTacToeAction",
+  "type": "object"
+}

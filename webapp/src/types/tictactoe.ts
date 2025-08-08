@@ -1,30 +1,37 @@
-export const TICTACTOE_GAME_ID = "tictactoe/v1" as const;
-
 export type TicTacToeActor = "agentA" | "agentB";
 
-export type TicTacToeMark = "X" | "O" | " ";
-
-export type TicTacToeBoard = TicTacToeMark[][]; // 3x3 expected
-
-export type TicTacToeMoveMessage = {
+// Types mirrored from backend JSON Schemas
+export type TicTacToeAction = {
   type: "move";
-  payload: {
-    row: number;
-    col: number;
-  };
+  payload: Record<string, number>;
 };
 
 export type TicTacToeState = {
-  board: TicTacToeBoard;
-  player: TicTacToeActor; // player to move
+  board: string[][];
+  player: TicTacToeActor;
   winner: TicTacToeActor | null;
 };
+
+export type TicTacToeObservation = {
+  board: string[][];
+  you: TicTacToeActor;
+};
+
+export type TicTacToeEvent = Record<string, unknown>;
+
+// Helper aliases for UI code
+export type TicTacToeBoard = TicTacToeState["board"];
+export type TicTacToeMark = string;
+
+// Backward-compat alias (keeps existing imports working)
+export type TicTacToeMoveMessage = TicTacToeAction;
 
 export type MatchSummary = {
   id: number;
   seed: string;
   status: string;
-  gameId: string;
+  gameKey: string;
+  gameVersion: string;
   createdAt: Date;
 };
 
@@ -32,13 +39,13 @@ export type TicTacToeTurn = {
   id: number;
   idx: number;
   actor: TicTacToeActor;
-  message: TicTacToeMoveMessage;
+  action: TicTacToeAction;
 };
 
 export type TicTacToeReplayStep = {
   idx: number;
   actor: TicTacToeActor;
-  move: TicTacToeMoveMessage | null;
+  action: TicTacToeAction | null;
   state: TicTacToeState | null; // state after this move if snapshot exists
 };
 

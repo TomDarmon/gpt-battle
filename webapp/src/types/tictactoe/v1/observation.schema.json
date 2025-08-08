@@ -1,0 +1,28 @@
+{
+  "properties": {
+    "board": {
+      "items": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "title": "Board",
+      "type": "array"
+    },
+    "you": {
+      "enum": [
+        "agentA",
+        "agentB"
+      ],
+      "title": "You",
+      "type": "string"
+    }
+  },
+  "required": [
+    "board",
+    "you"
+  ],
+  "title": "TicTacToeObservation",
+  "type": "object"
+}

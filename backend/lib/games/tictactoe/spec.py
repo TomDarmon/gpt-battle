@@ -5,7 +5,8 @@ from .models import TicTacToeState, TicTacToeAction, TicTacToeObservation
 
 
 class TicTacToeGameSpec(GameSpecProto[TicTacToeState, TicTacToeAction, TicTacToeObservation]):
-    game_id: str = "tictactoe/v1"
+    game_key: str = "tictactoe"
+    game_version: str = "v1"
 
     def initial_state(self, seed: str) -> TicTacToeState:
         random.seed(seed)
@@ -54,6 +55,19 @@ class TicTacToeGameSpec(GameSpecProto[TicTacToeState, TicTacToeAction, TicTacToe
 
     def observation_for(self, state: TicTacToeState, actor: str) -> TicTacToeObservation:
         return TicTacToeObservation(board=[r.copy() for r in state.board], you=actor)
+
+    def schemas(self) -> dict:
+        # Export JSON Schemas for State, Action, Observation, and a generic Event payload
+        return {
+            "state": TicTacToeState.model_json_schema(),
+            "action": TicTacToeAction.model_json_schema(),
+            "observation": TicTacToeObservation.model_json_schema(),
+            # Event payload is untyped dict; expose a permissive schema
+            "event": {
+                "type": "object",
+                "additionalProperties": True,
+            },
+        }
 
     @staticmethod
     def _check_winner(board: list[list[str]]) -> str | None:

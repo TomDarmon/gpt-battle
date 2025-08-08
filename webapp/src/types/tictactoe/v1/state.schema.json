@@ -1,0 +1,41 @@
+{
+  "properties": {
+    "board": {
+      "items": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "title": "Board",
+      "type": "array"
+    },
+    "player": {
+      "default": "agentA",
+      "enum": [
+        "agentA",
+        "agentB"
+      ],
+      "title": "Player",
+      "type": "string"
+    },
+    "winner": {
+      "anyOf": [
+        {
+          "enum": [
+            "agentA",
+            "agentB"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Winner"
+    }
+  },
+  "title": "TicTacToeState",
+  "type": "object"
+}

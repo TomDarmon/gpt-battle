@@ -119,8 +119,8 @@ function buildDerived(data: TicTacToeReplay | null | undefined, stepIndex: numbe
       winner = step.state.winner;
       continue;
     }
-    if (step.move) {
-      board = applyMove(board, step.actor, step.move);
+    if (step.action) {
+      board = applyMove(board, step.actor, step.action);
       player = step.actor === "agentA" ? "agentB" : "agentA";
       // Basic winner detection if three in a row
       winner = detectWinner(board);

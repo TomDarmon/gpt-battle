@@ -24,7 +24,6 @@ def match(game: str = "tictactoe", turns: int = 9, mode: str = "local"):
         a = RandomLegalAgent("agentA")
         b = RandomLegalAgent("agentB")
         spec = TicTacToeGameSpec()
-        breakpoint()
         return run_match_local(agent_a=a, agent_b=b, max_turns=turns, game=spec)
     else:
         raise ValueError("mode must be 'remote' or 'local'")
